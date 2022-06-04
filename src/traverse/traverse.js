@@ -19,6 +19,15 @@ class TraversalState {
     return this.getNodeAt(getAncestorPath(this.#currentPath));
   }
 
+  // unlike parentNode, might return an array
+  get parentElement() {
+    return this.getNodeAt(this.#currentPath.slice(0, -1));
+  }
+
+  get lastPathKey() {
+    return this.#currentPath[this.#currentPath.length-1];
+  }
+
   get ancestors() {
     const ancestors = [];
 
@@ -80,9 +89,17 @@ class TraversalState {
 
   replace(node, skip) {
     // XXX: this is cheating! We aren't using .parentNode because it's the last node, arrays don't count.
-    const parentElement = this.getNodeAt(this.#currentPath.slice(0, -1));
-    parentElement[this.#currentPath[this.#currentPath.length-1]] = node;
+    this.parentElement[this.lastPathKey] = node;
     this.#nextPath = this.#findNextPath(this.#currentPath, skip);
+  }
+
+  insertBefore(node) {
+    if (typeof this.lastPathKey !== "number")
+      throw new TypeError("`insertBefore` only works in arrays");
+
+    this.parentElement.splice(this.lastPathKey - 1, 0, node);
+    this.#currentPath[this.#currentPath.length - 1]++;
+    this.#nextPath = this.#findNextPath(this.#currentPath);
   }
 }
 
@@ -95,6 +112,9 @@ function getAncestorPath(path) {
 }
 
 function findNextPathSegment(node, currentProp) {
+  if (typeof node !== "object" || typeof node.type !== "string")
+    throw new TypeError("node.type has to be a string");
+
   const nextProp = findNextProp(node, currentProp);
   if (!nextProp) return undefined;
 

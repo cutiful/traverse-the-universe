@@ -2,6 +2,34 @@ const traverse = require("./traverse.js");
 const acorn = require("acorn");
 const escodegen = require("escodegen");
 
+const consoleLogExpression = {
+  type: "ExpressionStatement",
+  expression: {
+    type: "CallExpression",
+    callee: {
+      type: "MemberExpression",
+      object: {
+        type: "Identifier",
+        name: "console",
+      },
+      property: {
+        type: "Identifier",
+        name: "log",
+      },
+      computed: false,
+      optional: false,
+    },
+    arguments: [
+      {
+        type: "Literal",
+        value: 1,
+        raw: "1",
+      },
+    ],
+    optional: false,
+  },
+};
+
 describe("traversal", () => {
   it("goes into every expression", () => {
     const source = `const a = 1;
@@ -185,15 +213,18 @@ const d = 4;`);
     let visitedIdentifierC = false;
     traverse(ast, function (node) {
       if (node.type === "ArrowFunctionExpression")
-        this.replace({
-          type: "ObjectExpression",
-          properties: [
-            {
-              type: "Identifier",
-              name: "c",
-            },
-          ],
-        }, true);
+        this.replace(
+          {
+            type: "ObjectExpression",
+            properties: [
+              {
+                type: "Identifier",
+                name: "c",
+              },
+            ],
+          },
+          true
+        );
 
       if (node.type === "Identifier" && node.name === "c")
         visitedIdentifierC = true;
@@ -208,5 +239,27 @@ const d = 4;`);
 const d = 4;`);
 
     expect(visitedIdentifierC).toBe(false);
+  });
+
+  it("inserts before node", () => {
+    const source = `function f() {
+    console.log(() => "meow");
+  }`;
+    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+
+    traverse(ast, function (node) {
+      if (
+        node.type === "ExpressionStatement" &&
+        node.expression.type === "CallExpression"
+      )
+        this.insertBefore(consoleLogExpression);
+    });
+
+    // prettier-ignore
+    expect(escodegen.generate(ast)).toBe(
+`function f() {
+    console.log(1);
+    console.log(() => 'meow');
+}`);
   });
 });
