@@ -262,4 +262,60 @@ const d = 4;`);
     console.log(() => 'meow');
 }`);
   });
+
+  it("inserts after node without skipping", () => {
+    const source = `function f() {
+    console.log(() => "meow");
+  }`;
+    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+
+    let visitedOne = false;
+    traverse(ast, function (node) {
+      if (
+        node.type === "ExpressionStatement" &&
+        node.expression.type === "CallExpression" &&
+        node.expression.arguments[0].type === "ArrowFunctionExpression"
+      )
+        this.insertAfter(consoleLogExpression);
+      
+      if (node.type === "Literal" && node.value === 1)
+        visitedOne = true;
+    });
+
+    // prettier-ignore
+    expect(escodegen.generate(ast)).toBe(
+`function f() {
+    console.log(() => 'meow');
+    console.log(1);
+}`);
+    expect(visitedOne).toBe(true);
+  });
+
+  it("inserts after node and skips", () => {
+    const source = `function f() {
+    console.log(() => "meow");
+  }`;
+    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+
+    let visitedOne = false;
+    traverse(ast, function (node) {
+      if (
+        node.type === "ExpressionStatement" &&
+        node.expression.type === "CallExpression" &&
+        node.expression.arguments[0].type === "ArrowFunctionExpression"
+      )
+        this.insertAfter(consoleLogExpression, true);
+      
+      if (node.type === "Literal" && node.value === 1)
+        visitedOne = true;
+    });
+
+    // prettier-ignore
+    expect(escodegen.generate(ast)).toBe(
+`function f() {
+    console.log(() => 'meow');
+    console.log(1);
+}`);
+    expect(visitedOne).toBe(false);
+  });
 });

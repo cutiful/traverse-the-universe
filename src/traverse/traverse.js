@@ -25,7 +25,7 @@ class TraversalState {
   }
 
   get lastPathKey() {
-    return this.#currentPath[this.#currentPath.length-1];
+    return this.#currentPath[this.#currentPath.length - 1];
   }
 
   get ancestors() {
@@ -100,6 +100,19 @@ class TraversalState {
     this.parentElement.splice(this.lastPathKey - 1, 0, node);
     this.#currentPath[this.#currentPath.length - 1]++;
     this.#nextPath = this.#findNextPath(this.#currentPath);
+  }
+
+  insertAfter(node, skipBoth) {
+    if (typeof this.lastPathKey !== "number")
+      throw new TypeError("`insertBefore` only works in arrays");
+
+    this.parentElement.splice(this.lastPathKey + 1, 0, node);
+    if (!skipBoth) this.#nextPath = this.#findNextPath(this.#currentPath);
+    else
+      this.#nextPath = this.#findNextPath(
+        this.#currentPath.slice(0, -1).concat(this.lastPathKey + 1),
+        true
+      );
   }
 }
 
