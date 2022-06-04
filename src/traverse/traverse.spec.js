@@ -1,3 +1,5 @@
+"use strict";
+
 const traverse = require("./traverse.js");
 const acorn = require("acorn");
 const escodegen = require("escodegen");
