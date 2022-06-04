@@ -279,9 +279,8 @@ const d = 4;`);
         node.expression.arguments[0].type === "ArrowFunctionExpression"
       )
         this.insertAfter(consoleLogExpression);
-      
-      if (node.type === "Literal" && node.value === 1)
-        visitedOne = true;
+
+      if (node.type === "Literal" && node.value === 1) visitedOne = true;
     });
 
     // prettier-ignore
@@ -307,9 +306,8 @@ const d = 4;`);
         node.expression.arguments[0].type === "ArrowFunctionExpression"
       )
         this.insertAfter(consoleLogExpression, true);
-      
-      if (node.type === "Literal" && node.value === 1)
-        visitedOne = true;
+
+      if (node.type === "Literal" && node.value === 1) visitedOne = true;
     });
 
     // prettier-ignore
