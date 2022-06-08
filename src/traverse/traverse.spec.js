@@ -2,7 +2,7 @@
 
 const traverse = require("./traverse.js");
 const acorn = require("acorn");
-const escodegen = require("escodegen");
+const { generate } = require("astring");
 
 const consoleLogExpression = {
   type: "ExpressionStatement",
@@ -104,8 +104,7 @@ describe("traversal", () => {
     console.log(b);
   }
 
-  const d = 4;
-  `;
+  const d = 4;`;
     const ast = acorn.parse(source, { ecmaVersion: "latest" });
 
     const list = [];
@@ -143,8 +142,7 @@ describe("traversal", () => {
     console.log(b);
   }
 
-  const d = 4;
-  `;
+  const d = 4;`;
     const ast = acorn.parse(source, { ecmaVersion: "latest" });
 
     const list = [];
@@ -170,8 +168,7 @@ describe("modification", () => {
     console.log(b);
   }
 
-  const d = 4;
-  `;
+  const d = 4;`;
     const ast = acorn.parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierC = false;
@@ -191,13 +188,15 @@ describe("modification", () => {
         visitedIdentifierC = true;
     });
 
-    // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log({ c });
-    console.log(b);
+  console.log({
+    c
+  });
+  console.log(b);
 }
-const d = 4;`);
+const d = 4;
+`);
 
     expect(visitedIdentifierC).toBe(true);
   });
@@ -209,7 +208,7 @@ const d = 4;`);
   }
 
   const d = 4;
-  `;
+`;
     const ast = acorn.parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierC = false;
@@ -233,12 +232,15 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log({ c });
-    console.log(b);
+  console.log({
+    c
+  });
+  console.log(b);
 }
-const d = 4;`);
+const d = 4;
+`);
 
     expect(visitedIdentifierC).toBe(false);
   });
@@ -282,12 +284,17 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log({ c }, { c });
-    console.log(b);
+  console.log({
+    c
+  }, {
+    c
+  });
+  console.log(b);
 }
-const d = 4;`);
+const d = 4;
+`);
 
     expect(visitedIdentifierCTimes).toBe(2);
   });
@@ -334,12 +341,17 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log({ c }, { c });
-    console.log(b);
+  console.log({
+    c
+  }, {
+    c
+  });
+  console.log(b);
 }
-const d = 4;`);
+const d = 4;
+`);
 
     expect(visitedIdentifierCTimes).toBe(0);
   });
@@ -359,11 +371,12 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log(1);
-    console.log(() => 'meow');
-}`);
+  console.log(1);
+  console.log(() => "meow");
+}
+`);
   });
 
   it("inserts after node without skipping", () => {
@@ -385,11 +398,12 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log(() => 'meow');
-    console.log(1);
-}`);
+  console.log(() => "meow");
+  console.log(1);
+}
+`);
     expect(visitedOne).toBe(true);
   });
 
@@ -412,11 +426,12 @@ const d = 4;`);
     });
 
     // prettier-ignore
-    expect(escodegen.generate(ast)).toBe(
+    expect(generate(ast)).toBe(
 `function f() {
-    console.log(() => 'meow');
-    console.log(1);
-}`);
+  console.log(() => "meow");
+  console.log(1);
+}
+`);
     expect(visitedOne).toBe(false);
   });
 });
