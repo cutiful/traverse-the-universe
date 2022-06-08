@@ -89,30 +89,56 @@ class TraversalState {
     this.#nextPath = this.#findNextPath(this.#currentPath, true);
   }
 
-  replace(node, skip) {
-    // XXX: this is cheating! We aren't using .parentNode because it's the last node, arrays don't count.
+  #insertAt(path, index, node, deleteCount = 0) {
+    const host = this.getNodeAt(path);
+    if (!Array.isArray(host))
+      throw new TypeError("can only insert into an array");
+
+    const insertee = Array.isArray(node) ? node : [node];
+    host.splice(index, deleteCount, ...insertee);
+
+    return insertee.length;
+  }
+
+  #replaceCurrentNode(node) {
     this.parentElement[this.lastPathKey] = node;
+  }
+
+  replace(node, skip) {
+    if (Array.isArray(node)) {
+      this.#insertAt(this.#currentPath.slice(0, -1), this.lastPathKey, node, 1);
+      if (skip)
+        this.#currentPath[this.#currentPath.length - 1] =
+          this.lastPathKey + node.length - 1;
+    } else {
+      this.#replaceCurrentNode(node);
+    }
+
     this.#nextPath = this.#findNextPath(this.#currentPath, skip);
   }
 
   insertBefore(node) {
-    if (typeof this.lastPathKey !== "number")
-      throw new TypeError("`insertBefore` only works in arrays");
+    const insertCount = this.#insertAt(
+      this.#currentPath.slice(0, -1),
+      this.lastPathKey - 1,
+      node
+    );
+    this.#currentPath[this.#currentPath.length - 1] += insertCount;
 
-    this.parentElement.splice(this.lastPathKey - 1, 0, node);
-    this.#currentPath[this.#currentPath.length - 1]++;
     this.#nextPath = this.#findNextPath(this.#currentPath);
   }
 
   insertAfter(node, skipBoth) {
-    if (typeof this.lastPathKey !== "number")
-      throw new TypeError("`insertBefore` only works in arrays");
+    const insertCount = this.#insertAt(
+      this.#currentPath.slice(0, -1),
+      this.lastPathKey + 1,
+      node
+    );
 
-    this.parentElement.splice(this.lastPathKey + 1, 0, node);
     if (!skipBoth) this.#nextPath = this.#findNextPath(this.#currentPath);
     else
       this.#nextPath = this.#findNextPath(
-        this.#currentPath.slice(0, -1).concat(this.lastPathKey + 1),
+        this.#currentPath.slice(0, -1).concat(this.lastPathKey + insertCount),
         true
       );
   }

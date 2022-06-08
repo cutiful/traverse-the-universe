@@ -243,6 +243,107 @@ const d = 4;`);
     expect(visitedIdentifierC).toBe(false);
   });
 
+  it("replaces node with an array of nodes without skipping", () => {
+    const source = `function f() {
+    console.log(() => "meow");
+    console.log(b);
+  }
+
+  const d = 4;
+  `;
+    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+
+    let visitedIdentifierCTimes = 0;
+    traverse(ast, function (node) {
+      if (node.type === "ArrowFunctionExpression")
+        this.replace([
+          {
+            type: "ObjectExpression",
+            properties: [
+              {
+                type: "Identifier",
+                name: "c",
+              },
+            ],
+          },
+          {
+            type: "ObjectExpression",
+            properties: [
+              {
+                type: "Identifier",
+                name: "c",
+              },
+            ],
+          },
+        ]);
+
+      if (node.type === "Identifier" && node.name === "c")
+        visitedIdentifierCTimes++;
+    });
+
+    // prettier-ignore
+    expect(escodegen.generate(ast)).toBe(
+`function f() {
+    console.log({ c }, { c });
+    console.log(b);
+}
+const d = 4;`);
+
+    expect(visitedIdentifierCTimes).toBe(2);
+  });
+
+  it("replaces node with an array of nodes and skips", () => {
+    const source = `function f() {
+    console.log(() => "meow");
+    console.log(b);
+  }
+
+  const d = 4;
+  `;
+    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+
+    let visitedIdentifierCTimes = 0;
+    traverse(ast, function (node) {
+      if (node.type === "ArrowFunctionExpression")
+        this.replace(
+          [
+            {
+              type: "ObjectExpression",
+              properties: [
+                {
+                  type: "Identifier",
+                  name: "c",
+                },
+              ],
+            },
+            {
+              type: "ObjectExpression",
+              properties: [
+                {
+                  type: "Identifier",
+                  name: "c",
+                },
+              ],
+            },
+          ],
+          true
+        );
+
+      if (node.type === "Identifier" && node.name === "c")
+        visitedIdentifierCTimes++;
+    });
+
+    // prettier-ignore
+    expect(escodegen.generate(ast)).toBe(
+`function f() {
+    console.log({ c }, { c });
+    console.log(b);
+}
+const d = 4;`);
+
+    expect(visitedIdentifierCTimes).toBe(0);
+  });
+
   it("inserts before node", () => {
     const source = `function f() {
     console.log(() => "meow");
