@@ -1,7 +1,7 @@
 "use strict";
 
 const traverse = require("./traverse.js");
-const acorn = require("acorn");
+const { parse } = require("acorn");
 const { generate } = require("astring");
 
 const consoleLogExpression = {
@@ -38,7 +38,7 @@ describe("traversal", () => {
   function f(b, c, d = 2) {
     const e = () => c + 2;
   }`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     const list = [];
     traverse(ast, function (node) {
@@ -69,7 +69,7 @@ describe("traversal", () => {
 
   const d = 4;
   `;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     const list = [];
     traverse(ast, function (node) {
@@ -105,7 +105,7 @@ describe("traversal", () => {
   }
 
   const d = 4;`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     const list = [];
     traverse(ast, function (node) {
@@ -143,7 +143,7 @@ describe("traversal", () => {
   }
 
   const d = 4;`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     const list = [];
     traverse(ast, function (node) {
@@ -169,7 +169,7 @@ describe("modification", () => {
   }
 
   const d = 4;`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierC = false;
     traverse(ast, function (node) {
@@ -209,7 +209,7 @@ const d = 4;
 
   const d = 4;
 `;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierC = false;
     traverse(ast, function (node) {
@@ -253,7 +253,7 @@ const d = 4;
 
   const d = 4;
   `;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierCTimes = 0;
     traverse(ast, function (node) {
@@ -307,7 +307,7 @@ const d = 4;
 
   const d = 4;
   `;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedIdentifierCTimes = 0;
     traverse(ast, function (node) {
@@ -360,7 +360,7 @@ const d = 4;
     const source = `function f() {
     console.log(() => "meow");
   }`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     traverse(ast, function (node) {
       if (
@@ -383,7 +383,7 @@ const d = 4;
     const source = `function f() {
     console.log(() => "meow");
   }`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedOne = false;
     traverse(ast, function (node) {
@@ -411,7 +411,7 @@ const d = 4;
     const source = `function f() {
     console.log(() => "meow");
   }`;
-    const ast = acorn.parse(source, { ecmaVersion: "latest" });
+    const ast = parse(source, { ecmaVersion: "latest" });
 
     let visitedOne = false;
     traverse(ast, function (node) {
