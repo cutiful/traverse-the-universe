@@ -14,16 +14,16 @@ class TraversalState {
   }
 
   get currentNode() {
-    return this.getNodeAt(this.#currentPath);
+    return this.getElementAt(this.#currentPath);
   }
 
   get parentNode() {
-    return this.getNodeAt(getAncestorPath(this.#currentPath));
+    return this.getElementAt(getAncestorPath(this.#currentPath));
   }
 
   // unlike parentNode, might return an array
   get parentElement() {
-    return this.getNodeAt(this.#currentPath.slice(0, -1));
+    return this.getElementAt(this.#currentPath.slice(0, -1));
   }
 
   get lastPathKey() {
@@ -36,17 +36,17 @@ class TraversalState {
     let path = this.#currentPath;
     while (path.length > 0) {
       path = getAncestorPath(path);
-      ancestors.unshift(this.getNodeAt(path));
+      ancestors.unshift(this.getElementAt(path));
     }
 
     return ancestors;
   }
 
-  getNodeAt(path) {
-    let node = this.#ast;
-    for (const part of path) node = node[part];
+  getElementAt(path) {
+    let el = this.#ast;
+    for (const part of path) el = el[part];
 
-    return node;
+    return el;
   }
 
   #findNextPath(path, skip = false) {
@@ -60,7 +60,7 @@ class TraversalState {
       const lastSegment = path[i];
       if (typeof lastSegment === "string") {
         const newSegment = findNextPathSegment(
-          this.getNodeAt(tryPath),
+          this.getElementAt(tryPath),
           lastSegment
         );
         if (newSegment) return tryPath.concat(newSegment);
@@ -68,7 +68,7 @@ class TraversalState {
         const newPath = tryPath.slice(0, tryPath.length - 1);
         const arrayName = tryPath[i - 1];
         const newIndex = findNextArrayIndex(
-          this.getNodeAt(newPath),
+          this.getElementAt(newPath),
           arrayName,
           lastSegment
         );
@@ -90,7 +90,7 @@ class TraversalState {
   }
 
   #insertAt(path, index, node, deleteCount = 0) {
-    const host = this.getNodeAt(path);
+    const host = this.getElementAt(path);
     if (!Array.isArray(host))
       throw new TypeError("can only insert into an array");
 
