@@ -228,7 +228,7 @@ const propsToVisit = {
   ThisExpression: [],
   ArrayExpression: ["elements"],
   ObjectExpression: ["properties"],
-  Property: ["value"],
+  Property: ["key", "value"],
   FunctionExpression: ["body"],
 
   UnaryExpression: ["argument"],
