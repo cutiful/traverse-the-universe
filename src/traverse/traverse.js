@@ -181,6 +181,14 @@ function findNextArrayIndex(node, arrayName, currentIndex) {
   return currentIndex + 1;
 }
 
+/**
+ * Traverses the supplied AST. Doesn't go into node `id`s (for
+ * `FunctionDeclaration`, `VariableDeclarator`, etc) or `label`s
+ * (`LabeledStatement`, `BreakStatement`).
+ * @arg ast
+ * @arg callback - Function to be called on each node. Is bound to `TraversalState`, so you can use e. g. `this.replace(node)`.
+ * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
+ */
 function traverse(ast, callback, notes) {
   const state = new TraversalState(ast);
   while (state._step()) callback.call(state, state.currentNode, notes);
