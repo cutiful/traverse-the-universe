@@ -221,7 +221,7 @@ const propsToVisit = {
   ForStatement: ["init", "test", "update", "body"],
   ForInStatement: ["left", "right", "body"],
 
-  FunctionDeclaration: ["body"],
+  FunctionDeclaration: ["params", "body"],
   VariableDeclaration: ["declarations"],
   VariableDeclarator: ["init"],
 
@@ -229,7 +229,7 @@ const propsToVisit = {
   ArrayExpression: ["elements"],
   ObjectExpression: ["properties"],
   Property: ["key", "value"],
-  FunctionExpression: ["body"],
+  FunctionExpression: ["params", "body"],
 
   UnaryExpression: ["argument"],
   UpdateExpression: ["argument"],
@@ -248,7 +248,7 @@ const propsToVisit = {
   Super: [],
   SpreadElement: ["argument"],
 
-  ArrowFunctionExpression: ["body"],
+  ArrowFunctionExpression: ["params", "body"],
 
   YieldExpression: ["argument"],
 
