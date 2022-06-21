@@ -80,7 +80,10 @@ class TraversalState {
 
   #incrementPaths() {
     if (this.currentPath)
-      this.#executeGeneratorsBetweenPaths(this.currentPath, this.#nextPath || []);
+      this.#executeGeneratorsBetweenPaths(
+        this.currentPath,
+        this.#nextPath || []
+      );
 
     if (!this.#nextPath) return false;
 
@@ -114,7 +117,7 @@ class TraversalState {
     }
   }
 
-  _step(callback, notes) {
+  #step(callback, notes) {
     if (!this.#incrementPaths()) {
       this.#executeGenerator([]);
       return false;
@@ -127,6 +130,10 @@ class TraversalState {
     }
 
     return true;
+  }
+
+  _execute(callback, notes) {
+    while (this.#step(callback, notes)) continue;
   }
 
   skip() {
@@ -250,8 +257,7 @@ function findArrayMatchingLength(arr1, arr2) {
  * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
  */
 function traverse(ast, callback, notes) {
-  const state = new TraversalState(ast);
-  while (state._step(callback, notes)) {} // eslint-disable-line no-empty
+  new TraversalState(ast)._execute(callback, notes);
 }
 
 // basically, go anywhere there might be nodes, except Location, Identifier, Literal and such
