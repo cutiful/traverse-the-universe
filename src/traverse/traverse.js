@@ -117,22 +117,27 @@ class TraversalState {
     }
   }
 
-  #step(callback, notes) {
-    if (!this.#incrementPaths()) {
-      this.#executeGenerator([]);
-      return false;
-    }
-
+  #executeCallback(callback, notes) {
     const ret = callback.call(this, this.currentNode, notes);
     if (typeof ret?.next === "function") {
       ret.next();
       this.#addGenerator(ret);
     }
+  }
 
-    return true;
+  #step(callback, notes) {
+    this.#executeCallback(callback, notes);
+
+    if (this.#incrementPaths())
+      return true;
+
+    // last iteration
+    this.#executeGenerator([]);
+    return false;
   }
 
   _execute(callback, notes) {
+    this.#incrementPaths();
     while (this.#step(callback, notes)) continue;
   }
 
