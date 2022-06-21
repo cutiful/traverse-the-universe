@@ -4,6 +4,7 @@ class TraversalState {
   #ast = null;
   #currentPath = null;
   #nextPath = [];
+  #generators = {};
 
   constructor(ast) {
     this.#ast = ast;
@@ -77,11 +78,54 @@ class TraversalState {
     }
   }
 
-  _step() {
+  #incrementPaths() {
+    if (this.currentPath)
+      this.#executeGeneratorsBetweenPaths(this.currentPath, this.#nextPath || []);
+
     if (!this.#nextPath) return false;
 
     this.#currentPath = this.#nextPath;
     this.#nextPath = this.#findNextPath(this.#currentPath);
+    return true;
+  }
+
+  #addGenerator(generator) {
+    // paths are guaranteed not to include "/"
+    this.#generators[this.currentPath.join("/")] = generator;
+  }
+
+  #executeGenerator(path) {
+    const id = path.join("/");
+
+    if (this.#generators[id]) {
+      this.#currentPath = path;
+      this.#generators[id].next();
+      delete this.#generators[id];
+    }
+  }
+
+  #executeGeneratorsBetweenPaths(current, next) {
+    const matches = findArrayMatchingLength(current, next);
+    if (matches === current.length) return;
+
+    for (let i = current.length; i > matches; i--) {
+      const path = current.slice(0, i);
+      this.#executeGenerator(path);
+    }
+  }
+
+  _step(callback, notes) {
+    if (!this.#incrementPaths()) {
+      this.#executeGenerator([]);
+      return false;
+    }
+
+    const ret = callback.call(this, this.currentNode, notes);
+    if (typeof ret?.next === "function") {
+      ret.next();
+      this.#addGenerator(ret);
+    }
+
     return true;
   }
 
@@ -182,6 +226,22 @@ function findNextArrayIndex(node, arrayName, currentIndex) {
 }
 
 /**
+ * Finds the number of matching elements in two arrays. Returns the number
+ * (not the last matching index!). Only works for simple elements, not objects.
+ * @arg {array} arr1
+ * @arg {array} arr2
+ */
+function findArrayMatchingLength(arr1, arr2) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (!arr1[i] && arr2.length < i + 1) return i;
+
+    if (arr1[i] !== arr2[i]) return i;
+  }
+
+  return arr1.length;
+}
+
+/**
  * Traverses the supplied AST. Doesn't go into node `id`s (for
  * `FunctionDeclaration`, `VariableDeclarator`, etc) or `label`s
  * (`LabeledStatement`, `BreakStatement`).
@@ -191,7 +251,7 @@ function findNextArrayIndex(node, arrayName, currentIndex) {
  */
 function traverse(ast, callback, notes) {
   const state = new TraversalState(ast);
-  while (state._step()) callback.call(state, state.currentNode, notes);
+  while (state._step(callback, notes)) {} // eslint-disable-line no-empty
 }
 
 // basically, go anywhere there might be nodes, except Location, Identifier, Literal and such

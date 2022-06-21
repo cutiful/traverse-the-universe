@@ -163,6 +163,90 @@ describe("traversal", () => {
       "CallExpression",
     ]);
   });
+
+  it("calls the generator when exiting a node", () => {
+    const source = `{
+    const a = 1;
+    const b = 2, c = 3;
+  }
+
+  function f() {
+    console.log(() => "meow");
+    console.log(b);
+  }
+
+  const d = 4;`;
+    const ast = parse(source, { ecmaVersion: "latest" });
+
+    const entered = [];
+    const left = [];
+    traverse(ast, function* (node) {
+      entered.push(this.currentPath.join("/"));
+      yield;
+      left.push(this.currentPath.join("/"));
+    });
+
+    expect(entered).toEqual([
+      "",
+      "body/0",
+      "body/0/body/0",
+      "body/0/body/0/declarations/0",
+      "body/0/body/0/declarations/0/init",
+      "body/0/body/1",
+      "body/0/body/1/declarations/0",
+      "body/0/body/1/declarations/0/init",
+      "body/0/body/1/declarations/1",
+      "body/0/body/1/declarations/1/init",
+      "body/1",
+      "body/1/body",
+      "body/1/body/body/0",
+      "body/1/body/body/0/expression",
+      "body/1/body/body/0/expression/callee",
+      "body/1/body/body/0/expression/callee/object",
+      "body/1/body/body/0/expression/callee/property",
+      "body/1/body/body/0/expression/arguments/0",
+      "body/1/body/body/0/expression/arguments/0/body",
+      "body/1/body/body/1",
+      "body/1/body/body/1/expression",
+      "body/1/body/body/1/expression/callee",
+      "body/1/body/body/1/expression/callee/object",
+      "body/1/body/body/1/expression/callee/property",
+      "body/1/body/body/1/expression/arguments/0",
+      "body/2",
+      "body/2/declarations/0",
+      "body/2/declarations/0/init",
+    ]);
+    expect(left).toEqual([
+      "body/0/body/0/declarations/0/init",
+      "body/0/body/0/declarations/0",
+      "body/0/body/0",
+      "body/0/body/1/declarations/0/init",
+      "body/0/body/1/declarations/0",
+      "body/0/body/1/declarations/1/init",
+      "body/0/body/1/declarations/1",
+      "body/0/body/1",
+      "body/0",
+      "body/1/body/body/0/expression/callee/object",
+      "body/1/body/body/0/expression/callee/property",
+      "body/1/body/body/0/expression/callee",
+      "body/1/body/body/0/expression/arguments/0/body",
+      "body/1/body/body/0/expression/arguments/0",
+      "body/1/body/body/0/expression",
+      "body/1/body/body/0",
+      "body/1/body/body/1/expression/callee/object",
+      "body/1/body/body/1/expression/callee/property",
+      "body/1/body/body/1/expression/callee",
+      "body/1/body/body/1/expression/arguments/0",
+      "body/1/body/body/1/expression",
+      "body/1/body/body/1",
+      "body/1/body",
+      "body/1",
+      "body/2/declarations/0/init",
+      "body/2/declarations/0",
+      "body/2",
+      "",
+    ]);
+  });
 });
 
 describe("modification", () => {
@@ -193,14 +277,15 @@ describe("modification", () => {
     });
 
     expect(generate(ast)).toBe(
-`function f() {
+      `function f() {
   console.log({
     c
   });
   console.log(b);
 }
 const d = 4;
-`);
+`
+    );
 
     expect(visitedIdentifierC).toBe(true);
   });
