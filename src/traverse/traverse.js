@@ -4,7 +4,7 @@ class TraversalState {
   #ast = null;
   #currentPath = null;
   #nextPath = [];
-  #generators = {};
+  #generators = new Map();
 
   constructor(ast) {
     this.#ast = ast;
@@ -94,16 +94,16 @@ class TraversalState {
 
   #addGenerator(generator) {
     // paths are guaranteed not to include "/"
-    this.#generators[this.currentPath.join("/")] = generator;
+    this.#generators.set(this.currentPath.join("/"), generator);
   }
 
   #executeGenerator(path) {
     const id = path.join("/");
 
-    if (this.#generators[id]) {
+    if (this.#generators.has(id)) {
       this.#currentPath = path;
-      this.#generators[id].next();
-      delete this.#generators[id];
+      this.#generators.get(id).next();
+      this.#generators.delete(id);
     }
   }
 
