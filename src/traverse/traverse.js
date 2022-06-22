@@ -102,7 +102,8 @@ class TraversalState {
 
     if (this.#generators.has(id)) {
       this.#currentPath = path;
-      this.#generators.get(id).next();
+      if (!this.#generators.get(id).next().done)
+        console.warn(`Generator ${id} isn't done, but won't be called again`);
       this.#generators.delete(id);
     }
   }
