@@ -351,7 +351,7 @@ const propsToVisit = {
   ExportAllDeclaration: [],
 
   AwaitExpression: ["argument"],
-  ChainExpression: [],
+  ChainExpression: ["expression"],
   ImportExpression: ["source"],
 
   PropertyDefinition: ["key", "value"],
