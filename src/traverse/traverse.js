@@ -259,7 +259,8 @@ function findArrayMatchingLength(arr1, arr2) {
  * `FunctionDeclaration`, `VariableDeclarator`, etc) or `label`s
  * (`LabeledStatement`, `BreakStatement`). Doesn't go into `local`, `imported`
  * of `ImportSpecifier`, `ImportDefaultSpecifier`, `ImportNamespaceSpecifier`;
- * `exported` of `ExportSpecifier`, `ExportAllDeclaration`.
+ * `exported` of `ExportSpecifier`, `ExportAllDeclaration`. Doesn't go into
+ * `meta`, `property` of `MetaProperty`.
  * @arg ast
  * @arg callback - Function to be called on each node. Is bound to `TraversalState`, so you can use e. g. `this.replace(node)`.
  * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
