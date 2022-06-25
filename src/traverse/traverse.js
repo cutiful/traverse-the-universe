@@ -328,10 +328,10 @@ const propsToVisit = {
   TaggedTemplateLiteralExpression: ["tag", "quasi"],
   TemplateElement: [],
 
-  ObjectPattern: [], // Should we visit these? They can have AssignmentPattern with Expression on the right.
-  ArrayPattern: [],
-  RestElement: [],
-  AssignmentPattern: ["right"],
+  ObjectPattern: ["properties"],
+  ArrayPattern: ["elements"],
+  RestElement: ["argument"],
+  AssignmentPattern: ["left", "right"],
 
   ClassBody: ["body"],
   MethodDefinition: ["key", "value"],

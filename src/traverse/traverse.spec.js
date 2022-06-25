@@ -54,6 +54,7 @@ describe("traversal", () => {
       "Identifier",
       "Identifier",
       "AssignmentPattern",
+      "Identifier",
       "Literal",
       "BlockStatement",
       "VariableDeclaration",
