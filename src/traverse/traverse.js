@@ -1,5 +1,3 @@
-"use strict";
-
 class TraversalState {
   #ast = null;
   #currentPath = null;
@@ -265,7 +263,7 @@ function findArrayMatchingLength(arr1, arr2) {
  * @arg callback - Function to be called on each node. Is bound to `TraversalState`, so you can use e. g. `this.replace(node)`.
  * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
  */
-function traverse(ast, callback, notes) {
+export default function traverse(ast, callback, notes) {
   new TraversalState(ast)._execute(callback, notes);
 }
 
@@ -359,5 +357,3 @@ const propsToVisit = {
   PrivateIdentifier: [],
   StaticBlock: [],
 };
-
-module.exports = traverse;

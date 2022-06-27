@@ -1,8 +1,6 @@
-"use strict";
-
-const traverse = require("./traverse.js");
-const { parse } = require("acorn");
-const { generate } = require("astring");
+import traverse from "./traverse.js";
+import { parse } from "acorn";
+import { generate } from "astring";
 
 const consoleLogExpression = {
   type: "ExpressionStatement",
