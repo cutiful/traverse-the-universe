@@ -247,12 +247,7 @@ function findArrayMatchingLength(arr1, arr2) {
 }
 
 /**
- * Traverses the supplied AST. Doesn't go into node `id`s (for
- * `FunctionDeclaration`, `VariableDeclarator`, etc) or `label`s
- * (`LabeledStatement`, `BreakStatement`). Doesn't go into `local`, `imported`
- * of `ImportSpecifier`, `ImportDefaultSpecifier`, `ImportNamespaceSpecifier`;
- * `exported` of `ExportSpecifier`, `ExportAllDeclaration`. Doesn't go into
- * `meta`, `property` of `MetaProperty`.
+ * Traverses the supplied AST. Goes into every child Node.
  * @arg ast
  * @arg callback - Function to be called on each node. Is bound to `TraversalState`, so you can use e. g. `this.replace(node)`.
  * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
@@ -274,29 +269,29 @@ const propsToVisit = {
   DebuggerStatement: [],
   WithStatement: ["object", "body"],
   ReturnStatement: ["argument"],
-  LabeledStatement: ["body"],
-  BreakStatement: [],
-  ContinueStatement: [],
+  LabeledStatement: ["label", "body"],
+  BreakStatement: ["label"],
+  ContinueStatement: ["label"],
   IfStatement: ["test", "consequent", "alternate"],
   SwitchStatement: ["discriminant", "cases"],
   SwitchCase: ["test", "consequent"],
   ThrowStatement: ["argument"],
   TryStatement: ["block", "handler", "finalizer"],
-  CatchClause: ["body"],
+  CatchClause: ["param", "body"],
   WhileStatement: ["test", "body"],
   DoWhileStatement: ["body", "test"],
   ForStatement: ["init", "test", "update", "body"],
   ForInStatement: ["left", "right", "body"],
 
-  FunctionDeclaration: ["params", "body"],
+  FunctionDeclaration: ["id", "params", "body"],
   VariableDeclaration: ["declarations"],
-  VariableDeclarator: ["init"],
+  VariableDeclarator: ["id", "init"],
 
   ThisExpression: [],
   ArrayExpression: ["elements"],
   ObjectExpression: ["properties"],
   Property: ["key", "value"],
-  FunctionExpression: ["params", "body"],
+  FunctionExpression: ["id", "params", "body"],
 
   UnaryExpression: ["argument"],
   UpdateExpression: ["argument"],
@@ -315,11 +310,11 @@ const propsToVisit = {
   Super: [],
   SpreadElement: ["argument"],
 
-  ArrowFunctionExpression: ["params", "body"],
+  ArrowFunctionExpression: ["id", "params", "body"],
 
   YieldExpression: ["argument"],
 
-  TemplateLiteral: ["expressions"],
+  TemplateLiteral: ["quasis", "expressions"],
   TaggedTemplateLiteralExpression: ["tag", "quasi"],
   TemplateElement: [],
 
@@ -330,18 +325,18 @@ const propsToVisit = {
 
   ClassBody: ["body"],
   MethodDefinition: ["key", "value"],
-  ClassDeclaration: ["superClass", "body"],
-  ClassExpression: ["superClass", "body"],
-  MetaProperty: [],
+  ClassDeclaration: ["id", "superClass", "body"],
+  ClassExpression: ["id", "superClass", "body"],
+  MetaProperty: ["meta", "property"],
 
-  ImportDeclaration: ["specifiers"],
-  ImportSpecifier: [],
-  ImportDefaultSpecifier: [],
-  ImportNamespaceSpecifier: [],
-  ExportNamedDeclaration: ["declaration", "specifiers"],
-  ExportSpecifier: [],
+  ImportDeclaration: ["specifiers", "source"],
+  ImportSpecifier: ["local", "imported"],
+  ImportDefaultSpecifier: ["local"],
+  ImportNamespaceSpecifier: ["local"],
+  ExportNamedDeclaration: ["declaration", "specifiers", "source"],
+  ExportSpecifier: ["local", "exported"],
   ExportDefaultDeclaration: ["declaration"],
-  ExportAllDeclaration: [],
+  ExportAllDeclaration: ["source", "exported"],
 
   AwaitExpression: ["argument"],
   ChainExpression: ["expression"],
@@ -349,5 +344,5 @@ const propsToVisit = {
 
   PropertyDefinition: ["key", "value"],
   PrivateIdentifier: [],
-  StaticBlock: [],
+  StaticBlock: ["body"],
 };
