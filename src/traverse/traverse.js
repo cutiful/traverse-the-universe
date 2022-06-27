@@ -133,7 +133,7 @@ class TraversalState {
 
   _execute(callback, notes) {
     this.#incrementPaths();
-    while (this.#step(callback, notes)) continue;
+    while (this.#step(callback, notes));
   }
 
   skip() {
