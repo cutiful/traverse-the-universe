@@ -127,8 +127,7 @@ class TraversalState {
   #step(callback, notes) {
     this.#executeCallback(callback, notes);
 
-    if (this.#incrementPaths())
-      return true;
+    if (this.#incrementPaths()) return true;
 
     // last iteration
     this.#executeGenerator([]);
