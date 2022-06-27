@@ -180,9 +180,9 @@ describe("traversal", () => {
     const entered = [];
     const left = [];
     traverse(ast, function* (node) {
-      entered.push(this.currentPath.join("/"));
+      entered.push(this.path.join("/"));
       yield;
-      left.push(this.currentPath.join("/"));
+      left.push(this.path.join("/"));
     });
 
     expect(entered).toEqual([

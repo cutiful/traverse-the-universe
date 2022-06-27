@@ -1,6 +1,6 @@
 class TraversalState {
   #ast = null;
-  #currentPath = null;
+  #path = null;
   #nextPath = [];
   #generators = new Map();
 
@@ -8,31 +8,31 @@ class TraversalState {
     this.#ast = ast;
   }
 
-  get currentPath() {
-    return this.#currentPath;
+  get path() {
+    return this.#path;
   }
 
-  get currentNode() {
-    return this.getElementAt(this.#currentPath);
+  get node() {
+    return this.getElementAt(this.#path);
   }
 
   get parentNode() {
-    return this.getElementAt(getAncestorPath(this.#currentPath));
+    return this.getElementAt(getAncestorPath(this.#path));
   }
 
   // unlike parentNode, might return an array
   get parentElement() {
-    return this.getElementAt(this.#currentPath.slice(0, -1));
+    return this.getElementAt(this.#path.slice(0, -1));
   }
 
-  get lastPathKey() {
-    return this.#currentPath[this.#currentPath.length - 1];
+  get key() {
+    return this.#path[this.#path.length - 1];
   }
 
   get ancestors() {
     const ancestors = [];
 
-    let path = this.#currentPath;
+    let path = this.#path;
     while (path.length > 0) {
       path = getAncestorPath(path);
       ancestors.unshift(this.getElementAt(path));
@@ -50,11 +50,11 @@ class TraversalState {
 
   #findNextPath(path, skip = false) {
     if (!skip) {
-      const nextPathSegment = findNextPathSegment(this.currentNode, "");
-      if (nextPathSegment) return this.#currentPath.concat(nextPathSegment);
+      const nextPathSegment = findNextPathSegment(this.node, "");
+      if (nextPathSegment) return this.#path.concat(nextPathSegment);
     }
 
-    for (let i = this.#currentPath.length - 1; i >= 0; i--) {
+    for (let i = this.#path.length - 1; i >= 0; i--) {
       const tryPath = path.slice(0, i);
       const lastSegment = path[i];
       if (typeof lastSegment === "string") {
@@ -77,29 +77,26 @@ class TraversalState {
   }
 
   #incrementPaths() {
-    if (this.currentPath)
-      this.#executeGeneratorsBetweenPaths(
-        this.currentPath,
-        this.#nextPath || []
-      );
+    if (this.path)
+      this.#executeGeneratorsBetweenPaths(this.path, this.#nextPath || []);
 
     if (!this.#nextPath) return false;
 
-    this.#currentPath = this.#nextPath;
-    this.#nextPath = this.#findNextPath(this.#currentPath);
+    this.#path = this.#nextPath;
+    this.#nextPath = this.#findNextPath(this.#path);
     return true;
   }
 
   #addGenerator(generator) {
     // paths are guaranteed not to include "/"
-    this.#generators.set(this.currentPath.join("/"), generator);
+    this.#generators.set(this.path.join("/"), generator);
   }
 
   #executeGenerator(path) {
     const id = path.join("/");
 
     if (this.#generators.has(id)) {
-      this.#currentPath = path;
+      this.#path = path;
       if (!this.#generators.get(id).next().done)
         console.warn(`Generator ${id} isn't done, but won't be called again`);
       this.#generators.delete(id);
@@ -117,7 +114,7 @@ class TraversalState {
   }
 
   #executeCallback(callback, notes) {
-    const ret = callback.call(this, this.currentNode, notes);
+    const ret = callback.call(this, this.node, notes);
     if (typeof ret?.next === "function") {
       ret.next();
       this.#addGenerator(ret);
@@ -140,7 +137,7 @@ class TraversalState {
   }
 
   skip() {
-    this.#nextPath = this.#findNextPath(this.#currentPath, true);
+    this.#nextPath = this.#findNextPath(this.#path, true);
   }
 
   #insertAt(path, index, node, deleteCount = 0) {
@@ -155,44 +152,42 @@ class TraversalState {
   }
 
   #replaceCurrentNode(node) {
-    this.parentElement[this.lastPathKey] = node;
+    this.parentElement[this.key] = node;
   }
 
   replace(node, skip) {
     if (Array.isArray(node)) {
-      this.#insertAt(this.#currentPath.slice(0, -1), this.lastPathKey, node, 1);
-      if (skip)
-        this.#currentPath[this.#currentPath.length - 1] =
-          this.lastPathKey + node.length - 1;
+      this.#insertAt(this.#path.slice(0, -1), this.key, node, 1);
+      if (skip) this.#path[this.#path.length - 1] = this.key + node.length - 1;
     } else {
       this.#replaceCurrentNode(node);
     }
 
-    this.#nextPath = this.#findNextPath(this.#currentPath, skip);
+    this.#nextPath = this.#findNextPath(this.#path, skip);
   }
 
   insertBefore(node) {
     const insertCount = this.#insertAt(
-      this.#currentPath.slice(0, -1),
-      this.lastPathKey - 1,
+      this.#path.slice(0, -1),
+      this.key - 1,
       node
     );
-    this.#currentPath[this.#currentPath.length - 1] += insertCount;
+    this.#path[this.#path.length - 1] += insertCount;
 
-    this.#nextPath = this.#findNextPath(this.#currentPath);
+    this.#nextPath = this.#findNextPath(this.#path);
   }
 
   insertAfter(node, skipBoth) {
     const insertCount = this.#insertAt(
-      this.#currentPath.slice(0, -1),
-      this.lastPathKey + 1,
+      this.#path.slice(0, -1),
+      this.key + 1,
       node
     );
 
-    if (!skipBoth) this.#nextPath = this.#findNextPath(this.#currentPath);
+    if (!skipBoth) this.#nextPath = this.#findNextPath(this.#path);
     else
       this.#nextPath = this.#findNextPath(
-        this.#currentPath.slice(0, -1).concat(this.lastPathKey + insertCount),
+        this.#path.slice(0, -1).concat(this.key + insertCount),
         true
       );
   }
