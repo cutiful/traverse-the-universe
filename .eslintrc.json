@@ -1,0 +1,42 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "extends": ["eslint:recommended", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "none",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "no-empty": "warn",
+    "no-var": "error",
+    "curly": ["warn", "multi", "consistent"],
+    "eqeqeq": "error",
+    "prefer-template": "warn",
+    "no-unneeded-ternary": "error",
+    "object-shorthand": "error",
+    "max-depth": "warn",
+    "new-cap": "error",
+    "no-return-await": "error"
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.js", "**/__mocks__/*.js"],
+      "env": {
+        "jest": true,
+        "node": true,
+        "es2020": true
+      }
+    }
+  ]
+}
