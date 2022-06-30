@@ -113,16 +113,16 @@ class TraversalState {
     }
   }
 
-  #executeCallback(callback, notes) {
-    const ret = callback.call(this, this.node, notes);
+  #executeCallback(callback) {
+    const ret = callback.call(this, this.node);
     if (typeof ret?.next === "function") {
       ret.next();
       this.#addGenerator(ret);
     }
   }
 
-  #step(callback, notes) {
-    this.#executeCallback(callback, notes);
+  #step(callback) {
+    this.#executeCallback(callback);
 
     if (this.#incrementPaths()) return true;
 
@@ -131,9 +131,9 @@ class TraversalState {
     return false;
   }
 
-  _execute(callback, notes) {
+  _execute(callback) {
     this.#incrementPaths();
-    while (this.#step(callback, notes));
+    while (this.#step(callback));
   }
 
   skip() {
@@ -250,10 +250,9 @@ function findArrayMatchingLength(arr1, arr2) {
  * Traverses the supplied AST. Goes into every child Node.
  * @arg ast
  * @arg callback - Function to be called on each node. Is bound to `TraversalState`, so you can use e. g. `this.replace(node)`.
- * @arg {object} notes - Object that is passed to the callback as the third argument. Use it to store any data you want.
  */
-export default function traverse(ast, callback, notes) {
-  new TraversalState(ast)._execute(callback, notes);
+export default function traverse(ast, callback) {
+  new TraversalState(ast)._execute(callback);
 }
 
 // basically, go anywhere there might be nodes, except Location, Identifier, Literal and such
