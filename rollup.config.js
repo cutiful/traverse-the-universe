@@ -20,15 +20,17 @@ export default [
   },
   {
     external: [/@babel\/runtime/],
-    input: "src/traverse.js",
+    input: ["src/traverse.js", "src/props.js"],
     output: [
       {
-        file: "dist/traverse.cjs",
+        dir: "dist/",
+        entryFileNames: "[name].cjs",
         format: "cjs",
         exports: "default",
       },
       {
-        file: "dist/traverse.mjs",
+        dir: "dist/",
+        entryFileNames: "[name].mjs",
         format: "es",
       },
     ],
