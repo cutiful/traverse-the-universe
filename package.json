@@ -1,6 +1,6 @@
 {
   "name": "traverse-the-universe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yet another AST traversal library",
   "keywords": [
     "ast",
@@ -16,6 +16,8 @@
   "files": [
     "dist/*"
   ],
+  "main": "dist/traverse.cjs",
+  "browser": "dist/traverse.min.js",
   "exports": {
     "import": "dist/traverse.mjs",
     "require": "dist/traverse.cjs",
