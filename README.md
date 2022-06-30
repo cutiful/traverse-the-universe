@@ -16,6 +16,14 @@ Yarn:
 yarn add traverse-the-universe
 ```
 
+Browsers (UMD):
+```html
+<script src="https://unpkg.com/traverse-the-universe"></script>
+<script>
+  traverseTheUniverse(ast, callback);
+</script>
+```
+
 ## Usage
 
 Generate the abstract syntax tree using [acorn](https://www.npmjs.com/package/acorn) or a compatible library. Then, call `traverse(ast, callback)`, where `callback` is a function that accepts `node` as the only argument. Call methods on `this` to manipulate the tree.
