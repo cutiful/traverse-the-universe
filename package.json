@@ -16,19 +16,19 @@
   "files": [
     "dist/*"
   ],
-  "main": "dist/traverse.cjs",
-  "browser": "dist/traverse.min.js",
+  "main": "./dist/traverse.cjs",
+  "browser": "./dist/traverse.min.js",
   "exports": {
     ".": {
-      "import": "dist/traverse.mjs",
-      "require": "dist/traverse.cjs",
-      "browser": "dist/traverse.min.js",
-      "default": "dist/traverse.cjs"
+      "import": "./dist/traverse.mjs",
+      "require": "./dist/traverse.cjs",
+      "browser": "./dist/traverse.min.js",
+      "default": "./dist/traverse.cjs"
     },
     "./props": {
-      "import": "dist/props.mjs",
-      "require": "dist/props.cjs",
-      "default": "dist/props.cjs"
+      "import": "./dist/props.mjs",
+      "require": "./dist/props.cjs",
+      "default": "./dist/props.cjs"
     }
   },
   "scripts": {
