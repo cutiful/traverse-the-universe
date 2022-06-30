@@ -19,10 +19,9 @@ function resolveBases(bases) {
 }
 
 function getBaseProps(name) {
-  return resolveBases(spec[name].base).reduce(
-    (a, v) => Object.assign({}, a, spec[v].props),
-    {}
-  );
+  return resolveBases(spec[name].base)
+    .reverse()
+    .reduce((a, v) => Object.assign({}, a, spec[v].props), {});
 }
 
 function getProps(name) {
