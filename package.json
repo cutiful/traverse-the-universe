@@ -31,6 +31,7 @@
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write .",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "docs": "cp README.preambule.md README.md && jsdoc2md src/traverse.js >> README.md",
     "prepublishOnly": "run-s build"
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "jest": "^28.0.0-alpha.8",
+    "jsdoc-to-markdown": "^7.1.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.6.2",
     "rollup": "^2.75.7",
