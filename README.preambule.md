@@ -17,6 +17,7 @@ yarn add traverse-the-universe
 ```
 
 Browsers (UMD):
+
 ```html
 <script src="https://unpkg.com/traverse-the-universe"></script>
 <script>
@@ -42,7 +43,7 @@ traverse(ast, function (node) {
 
   console.log(this.path); // [ "body", 0, "body", "body", 0, "expression", "callee", "object" ]
   console.log(this.key); // "object"
-  console.log(this.parentNode.type); // MemberExpression
+  console.log(this.parentNode?.type); // MemberExpression
 
   console.log(this.ancestors); // returns an array of parent nodes
   console.log(this.ancestors.map((a) => a.type)); // ["Program", "WhileStatement", "BlockStatement", "ExpressionStatement", "CallExpression", "MemberExpression"]
@@ -100,7 +101,7 @@ const logExpression = {
 };
 traverse(ast, function (node) {
   if (
-    this.parentNode.type === "BlockStatement" &&
+    this.parentNode?.type === "BlockStatement" &&
     node.type === "VariableDeclaration"
   ) {
     this.insertBefore(logExpression); // insert the node before the current one
@@ -111,3 +112,5 @@ traverse(ast, function (node) {
 ```
 
 # Documentation
+
+<!-- The reason we aren't using the templating feature of jsdoc2md is that we couldn't run Prettier on a .hbs file -->
