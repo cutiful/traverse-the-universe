@@ -30,6 +30,7 @@ class TraversalState {
    * Returns the parent node.
    */
   get parentNode() {
+    if (this.#path.length === 0) return undefined;
     return this.getElementAt(getAncestorPath(this.#path));
   }
 
@@ -37,6 +38,7 @@ class TraversalState {
    * Returns the parent element. The difference between this method and {@link TraversalState#parentNode} is that the latter always returns an AST node, whereas this method may return an array of nodes. E. g. if the current node is located inside `body` of a `BlockStatement`.
    */
   get parentElement() {
+    if (this.#path.length === 0) return undefined;
     return this.getElementAt(this.#path.slice(0, -1));
   }
 
