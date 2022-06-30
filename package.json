@@ -1,0 +1,54 @@
+{
+  "name": "traverse-the-universe",
+  "version": "1.0.0",
+  "description": "Yet another AST traversal library",
+  "keywords": [
+    "ast",
+    "traverse",
+    "acorn",
+    "estree"
+  ],
+  "homepage": "https://github.com/cutiful/traverse-the-universe#readme",
+  "bugs": "https://github.com/cutiful/traverse-the-universe/issues",
+  "repository": "github:cutiful/traverse-the-universe",
+  "author": "Spring Raindrop",
+  "type": "module",
+  "files": [
+    "dist/*"
+  ],
+  "exports": {
+    "import": "dist/traverse.mjs",
+    "require": "dist/traverse.cjs",
+    "browser": "dist/traverse.js",
+    "default": "dist/traverse.cjs"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "run-s -c lint:*",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --check .",
+    "fix": "run-s -c fix:*",
+    "fix:eslint": "eslint --fix .",
+    "fix:prettier": "prettier --write .",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.18.6"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@rollup/plugin-babel": "^5.3.1",
+    "acorn": "^8.7.1",
+    "astring": "^1.8.3",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.0.0-alpha.8",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
+    "rollup": "^2.75.7"
+  },
+  "browserslist": "node >= 12, firefox >= 52",
+  "license": "Apache-2.0"
+}
