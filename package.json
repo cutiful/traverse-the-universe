@@ -30,7 +30,8 @@
     "fix": "run-s -c fix:*",
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write .",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "prepublishOnly": "run-s build"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.6"
