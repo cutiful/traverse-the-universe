@@ -1,4 +1,5 @@
 import { babel } from "@rollup/plugin-babel";
+import { terser } from "rollup-plugin-terser";
 
 const babelOptions = {
   exclude: "node_modules/**",
@@ -10,12 +11,12 @@ export default [
     input: "src/traverse.js",
     output: [
       {
-        file: "dist/traverse.js",
+        file: "dist/traverse.min.js",
         format: "umd",
         name: "traverseTheUniverse",
       },
     ],
-    plugins: [babel({ ...babelOptions, babelHelpers: "bundled" })],
+    plugins: [babel({ ...babelOptions, babelHelpers: "bundled" }), terser()],
   },
   {
     external: [/@babel\/runtime/],
