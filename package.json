@@ -1,12 +1,17 @@
 {
   "name": "traverse-the-universe",
   "version": "1.0.5",
-  "description": "Yet another ESTree AST traversal library, making use of this binding and generators",
+  "description": "Yet another ESTree AST traversal/modification library, making use of `this` binding and generators",
   "keywords": [
     "ast",
     "traverse",
     "acorn",
-    "estree"
+    "estree",
+    "ast-traversal",
+    "ast-transformation",
+    "estree-ast-traversal",
+    "js-ast",
+    "es2022"
   ],
   "homepage": "https://github.com/cutiful/traverse-the-universe#readme",
   "bugs": "https://github.com/cutiful/traverse-the-universe/issues",
