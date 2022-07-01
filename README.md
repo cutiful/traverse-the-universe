@@ -1,6 +1,6 @@
 # traverse-the-universe
 
-Yet another ESTree AST traversal library, making use of `this` binding and generators.
+Yet another ESTree AST traversal/modification library, making use of `this` binding and generators. Supports ES2022 via rules generated from [ESTree formal data](https://github.com/estree/formal).
 
 ## Installation
 
