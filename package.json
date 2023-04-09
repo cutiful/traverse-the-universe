@@ -46,7 +46,7 @@
     "fix:eslint": "eslint --fix .",
     "fix:prettier": "prettier --write .",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "docs": "cp README.preambule.md README.md && jsdoc2md src/traverse.js >> README.md",
+    "docs": "cp README.preamble.md README.md && jsdoc2md src/traverse.js >> README.md",
     "prepublishOnly": "run-s build"
   },
   "dependencies": {
