@@ -167,7 +167,7 @@ class TraversalState {
   }
 
   #step(callback) {
-    this.#executeCallback(callback);
+    if (this.node !== null) this.#executeCallback(callback);
 
     if (this.#incrementPaths()) return true;
 
@@ -264,6 +264,8 @@ function getAncestorPath(path) {
 }
 
 function findNextPathSegment(node, currentProp) {
+  if (node === null) return undefined;
+
   if (typeof node !== "object" || typeof node.type !== "string")
     throw new TypeError("node.type has to be a string");
 

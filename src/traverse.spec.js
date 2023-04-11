@@ -283,6 +283,29 @@ describe("traversal", () => {
       "",
     ]);
   });
+
+  it("traverses null nodes", () => {
+    const source = `const [a, , b] = [1, 2, 3];`;
+    const ast = parse(source, { ecmaVersion: "latest" });
+
+    const list = [];
+    traverse(ast, function (node) {
+      list.push(node.type);
+    });
+
+    expect(list).toEqual([
+      "Program",
+      "VariableDeclaration",
+      "VariableDeclarator",
+      "ArrayPattern",
+      "Identifier",
+      "Identifier",
+      "ArrayExpression",
+      "Literal",
+      "Literal",
+      "Literal",
+    ]);
+  });
 });
 
 describe("modification", () => {
