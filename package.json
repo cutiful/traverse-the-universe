@@ -1,6 +1,6 @@
 {
   "name": "traverse-the-universe",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Yet another ESTree AST traversal/modification library, making use of `this` binding and generators",
   "keywords": [
     "ast",
