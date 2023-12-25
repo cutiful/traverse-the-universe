@@ -69,6 +69,6 @@
     "prettier": "^2.6.2",
     "rollup": "^3.20.2"
   },
-  "browserslist": "node >= 12, firefox >= 52",
+  "browserslist": "node >= 16, last 4 chrome versions, last 4 firefox versions",
   "license": "Apache-2.0"
 }
