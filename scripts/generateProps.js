@@ -84,6 +84,6 @@ const source = `// THIS FILE WAS GENERATED AUTOMATICALLY, DO NOT EDIT BY HAND
 const nodes = ${JSON.stringify(result, null, 2)};
 
 export default nodes;`;
-const formatted = prettier.format(source, { parser: "babel" });
+const formatted = await prettier.format(source, { parser: "babel" });
 
 fs.writeFile(outputPath, formatted);
