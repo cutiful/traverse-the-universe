@@ -20,7 +20,7 @@ import prettier from "prettier";
 const ignoreTypes = ["SourceLocation", "RegExp"];
 const specPath = new URL(
   "../node_modules/estree-formal/formal-data/es2022.json",
-  import.meta.url
+  import.meta.url,
 );
 const outputPath = new URL("../src/props.js", import.meta.url);
 
@@ -71,7 +71,7 @@ function getPropsToUse(name) {
 const spec = JSON.parse(
   await fs.readFile(specPath, {
     encoding: "utf-8",
-  })
+  }),
 );
 
 const names = Object.keys(spec)

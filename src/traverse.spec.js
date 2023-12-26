@@ -343,7 +343,7 @@ describe("modification", () => {
   console.log(b);
 }
 const d = 4;
-`
+`,
     );
 
     expect(visitedIdentifierC).toBe(true);
@@ -372,7 +372,7 @@ const d = 4;
               },
             ],
           },
-          true
+          true,
         );
 
       if (node.type === "Identifier" && node.name === "c")
@@ -481,7 +481,7 @@ const d = 4;
               ],
             },
           ],
-          true
+          true,
         );
 
       if (node.type === "Identifier" && node.name === "c")

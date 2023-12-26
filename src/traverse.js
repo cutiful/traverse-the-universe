@@ -105,7 +105,7 @@ class TraversalState {
       if (typeof lastSegment === "string") {
         const newSegment = findNextPathSegment(
           this.getElementAt(tryPath),
-          lastSegment
+          lastSegment,
         );
         if (newSegment) return tryPath.concat(newSegment);
       } else {
@@ -114,7 +114,7 @@ class TraversalState {
         const newIndex = findNextArrayIndex(
           this.getElementAt(newPath),
           arrayName,
-          lastSegment
+          lastSegment,
         );
         if (newIndex) return newPath.concat([arrayName, newIndex]);
       }
@@ -227,7 +227,7 @@ class TraversalState {
     const insertCount = this.#insertAt(
       this.#path.slice(0, -1),
       this.key - 1,
-      node
+      node,
     );
     this.#path[this.#path.length - 1] += insertCount;
 
@@ -243,14 +243,14 @@ class TraversalState {
     const insertCount = this.#insertAt(
       this.#path.slice(0, -1),
       this.key + 1,
-      node
+      node,
     );
 
     if (!skipBoth) this.#nextPath = this.#findNextPath(this.#path);
     else
       this.#nextPath = this.#findNextPath(
         this.#path.slice(0, -1).concat(this.key + insertCount),
-        true
+        true,
       );
   }
 }
